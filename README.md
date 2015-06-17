@@ -9,6 +9,7 @@ Done:
  3. Make sure that print css is loaded only for media=print
  4. resize pizzeria.jpg to small size not to load 2.3 mb each time
 
+* [Optimized index.html](http://denismoroz.github.io/fend-p4/ "Optimized portfolio")
 
 Some useful tips to help you get started:
 
