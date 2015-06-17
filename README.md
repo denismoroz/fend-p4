@@ -14,9 +14,9 @@ Optimizations:
 ####Part 2: Optimize Frames per Second in pizza.html
 
 Optimizations scrolling:
- Problem function is views/js/main.js updatePositions(). Main issue that is it recalucate phase var for each element but that is expensive
+ Problem function is views/js/main.js updatePositions(). Main issue that it is recalucate phase var for each element
  Soluiton:
- 	1. precalucate phases map, because there are only 5 values because we do % 5 on item number that lead looping of phase from 0 to 4.
+ 	1. precalucate phases map, because there are only 5 values for phases. We do % 5 on item number that lead looping of phase from 0 to 4.
  	2. use right phase on calculation moving pizzas.
 
 Optimizations change pizza size:
