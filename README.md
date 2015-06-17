@@ -18,8 +18,8 @@ Optimizations:
 Optimizations scrolling:
  Problem function is views/js/main.js updatePositions(). Main issue that it is recalucate phase var for each element
 Soluiton:
-	1. precalucate phases map, because there are only 5 values for phases. We do % 5 on item number that lead looping of phase from 0 to 4.
- 	2. use right phase on calculation moving pizzas.
+ 1. precalucate phases map, because there are only 5 values for phases. We do % 5 on item number that lead looping of phase from 0 to 4.
+ 2. use right phase on calculation moving pizzas.
 
 Optimizations change pizza size:
  1. Request all .randomPizzaContainer only once
