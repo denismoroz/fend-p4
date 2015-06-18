@@ -466,14 +466,31 @@ var resizePizzas = function(size) {
   }
 
   // Iterates through pizza elements on the page and changes their widths
-  // Perfomance fixes:
-  //    Select randomPizzas only once
-  //    and set new weight by a constant
   function changePizzaSizes(size) {
     'use strict';
 
+    /*
+      Experiment:
+        getElementsByClassName vs querySelectorAll on perfomance
+
+      Desktop: MacBookPro late 2013 2.3 GHz Intel Core i7 16 GB 1600 MHz DDR3
+      Mobile: Lenovo p780
+
+      Results:
+        getElementsByClassName() - Desktop: 0.45599997974932194ms Mobile: 4.716999999800464ms
+        querySelectorAll() -       Desktop: 0.6140000186860561ms  Mobile: 3.7460000003193272ms
+
+      Summary:
+        getElementsByClassName is little bit slower on mobile.
+
+      Links:
+        https://jsperf.com/getelementsbyclassname-vs-queryselectorall/15
+    */
+
+    // Request all randomPizzas only once per size change.
     var randomPizzas = document.getElementsByClassName('randomPizzaContainer');
 
+    // Calculate newWidth using requested size only once for all pizzas.
     var newWidth = 100;
     switch(size) {
         case '1':
@@ -486,10 +503,12 @@ var resizePizzas = function(size) {
           newWidth = 50;
           break;
         default:
-          console.log('bug in sizeSwitcher');
+          console.log('bug in sizeSelector');
     }
+    // Calculate pizzasSize only once to optimize for loop.
     var pizzasSize = randomPizzas.length;
     for (var i = 0; i < pizzasSize; i++) {
+      // Use saved array to modify pizzas width.
       randomPizzas[i].style.width = newWidth + '%';
     }
   }
@@ -543,19 +562,41 @@ function updatePositions() {
   frame++;
   window.performance.mark('mark_start_frame');
 
+  /*
+      Experiment:
+        getElementsByClassName vs querySelectorAll on perfomance
+
+      Desktop: MacBookPro late 2013 2.3 GHz Intel Core i7 16 GB 1600 MHz DDR3
+      Mobile: Lenovo p780
+      Results:
+        getElementsByClassName() - Desktop: 0.1752000767737627ms Mobile: 2.4183999999877415ms
+        querySelectorAll() -       Desktop: 0.26379998307675123ms Mobile: 3.048499999931664ms
+
+      Summary:
+        Use getElementsByClassName instead of querySelectorAll to save 0.5ms on Mobile and 0.05 ms on Desktop
+      Links:
+        https://jsperf.com/getelementsbyclassname-vs-queryselectorall/15
+  */
+
+  // request all items only once
   var items = document.getElementsByClassName('mover');
 
-  var phases = {};
+  var positions = {};
   var scrollTop = document.body.scrollTop;
 
-  // Calculate phases only once, we have only 5 of them because we do % on .mover item number
+  // Calculate positions only once, we have only 5 of them because we do % on .mover item number
   for (var p = 0; p < 5; p++) {
-    phases[p] = Math.sin((scrollTop / 1250) + p);
+    positions[p] = Math.sin((scrollTop / 1250) + p) * 100;
   }
 
-  for (var i = 0; i < items.length; i++) {
-    var phase = phases[i % 5];
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+  // Save items_size to not recaluclate on each for iteration
+  var items_size = items.length;
+  for (var i = 0; i < items_size; i++) {
+    var position = positions[i % 5];
+    // Move element using transform property. it is more cheap in modern browsers
+    // http://www.html5rocks.com/en/tutorials/speed/high-performance-animations/
+    // http://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
+    items[i].style.transform = 'translateX(' + position + 'px)';
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -586,6 +627,9 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.width = '73.333px';
     elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
+
+    // Calculate left position on pizza only once on creation, it is moved here from updatePositions().
+    elem.style.left = (i % cols) * s + 'px';
     document.querySelector('#movingPizzas1').appendChild(elem);
   }
   updatePositions();
