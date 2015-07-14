@@ -11,8 +11,8 @@ Optimizations:
  5. minimify html and css use html-minifier and clean css for that
  6. use image optim to optimize images
 
-* [Optimized index.html](http://denismoroz.github.io/fend-p4/ "Optimized portfolio")
-* [Optimized index.html without minification ](http://denismoroz.github.io/fend-p4/index.full.html "Not minified optimized portfolio")
+* [Optimized index.html](http://denismoroz.github.io/fend-p4-website-perfomance-optimization/ "Optimized portfolio")
+* [Optimized index.html without minification ](http://denismoroz.github.io/fend-p4-website-perfomance-optimization/index.full.html "Not minified optimized portfolio")
 
 ####Part 2: Optimize Frames per Second in pizza.html
 
